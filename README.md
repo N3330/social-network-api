@@ -17,6 +17,8 @@ WHEN I test API POST and DELETE routes in Insomnia THEN I am able to successfull
 - express
 - Mongoose
 
-[Walkthrough Video]()
-[Github Repository]()
+## Resources
+
+- [Walkthrough Video](https://drive.google.com/file/d/1_L-9yuXvFBx_MWZ0nF1qBoxpd1iqG6Iz/view?usp=sharing)
+- [Github Repository](https://github.com/N3330/social-network-api)
 
