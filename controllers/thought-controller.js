@@ -1,11 +1,11 @@
 const { Thought, User } = require('../models');
 
 module.exports = {
-    getThoughts(req, res) {
+    getThoughts(req, res) { // find all thoughts 
       Thought.find()
         .then((thoughts) => res.json(thoughts))
         .catch((err) => res.status(500).json(err));
-    },
+    },//find one thought by id
     getSingleThought(req, res) {
       Thought.findOne({ _id: req.params.thoughtId })
         .select("-__v")
@@ -16,12 +16,12 @@ module.exports = {
         )
         .catch((err) => res.status(500).json(err));
     },
-    // create a new user
+    // create a new thought
     createThought(req, res) {
       Thought.create(req.body)
         .then((thought) => res.json(thought))
         .catch((err) => res.status(500).json(err));
-    },
+    },// delete thought
     deleteThought(req, res) {
       Thought.findOneAndDelete({ _id: req.params.thoughtId})
         .then((thought) =>
@@ -30,7 +30,7 @@ module.exports = {
             : res.json(thought)
         )
         .catch((err) => res.status(500).json(err));
-    },
+    },//update thought
     updateThought(req, res) {
       Thought.findOneAndUpdate(
           {_id: req.params.thoughtId},
@@ -44,12 +44,30 @@ module.exports = {
     .catch((err) => res.status(500).json(err));
     },
   
-    // add friend
-    addReaction(req, res) {
+    // add reaction
+    addReaction({params, body}, res) {
         // update the thought by adding reaction and deleting reaction just like add friend
-      
+      Thought.findOneAndUpdate(
+        { _id: params.thoughtId },
+        { $push: { reactions: body }},
+        { new: true, runValidators: true }
+      ).then((thought) =>
+      !thought
+        ? res.status(404).json({ message: "No thought with that ID" })
+        : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
     },
-    removeReaction(req, res) {
-      
+    removeReaction({ params }, res) {
+        Thought.findOneAndUpdate(
+            {_id: params.thoughtId },
+            { $pull: { reactions: { reactionId: params.reactionId } }},
+            { runValidators: true, new: true }
+        ).then((thought) =>
+        !thought
+          ? res.status(404).json({ message: "No thought with that ID" })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
     }
   };
